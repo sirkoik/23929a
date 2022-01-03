@@ -4,7 +4,7 @@ import {
   gotConversations,
   addConversation,
   setNewMessage,
-  setSearchedUsers,
+  setSearchedUsers
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -80,8 +80,15 @@ export const fetchConversations = () => async (dispatch) => {
 };
 
 const saveMessage = async (body) => {
+  console.log(
+    "[thunkCreators] saveMessage: attempting to send body to db endpoint",
+    body
+  );
   const { data } = await axios.post("/api/messages", body);
-  console.log("[thunkCreators] saveMessage: successfully posted", data);
+  console.log(
+    "[thunkCreators] saveMessage: successfully posted to db endpoint",
+    data
+  );
   return data;
 };
 
@@ -89,7 +96,7 @@ const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
     recipientId: body.recipientId,
-    sender: data.sender,
+    sender: data.sender
   });
 };
 
@@ -97,26 +104,47 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 
 // NOTE: The original version of postMessage attempted use data.message without
-// waiting for the promise to fulfill. sends undefined to addConversation
+// waiting for the promise to fulfill, and sent undefined to addConversation
 export const postMessage = (body) => async (dispatch) => {
   try {
-    // TODO saveMessage is async (performs a POST). Update state before here?
-    const data = await saveMessage(body);
+    // setup an immediate message to add to the state so it shows right away
+    // before the data has been submitted to the endpoint.
+    // problems:
+    // 1. This doesn't know what the unique ID is since the ID is returned from the endpoint.
+    // 2. This modifies the state before the data is posted and keeps it that way.
+    // TODO better approach: add this to a temporary state. concatenate the temporary state,
+    // then clear the temporary state once the data has been posted to the endpoint.
+    const currentDate = new Date().toISOString();
+    const immediateMessage = {
+      conversationId: body.conversationId,
+      senderId: body.senderId,
+      // id: 0,
+      text: body.text,
+      createdAt: currentDate,
+      updatedat: currentDate
+    };
+    console.log(
+      "[thunkCreators]: postMessage: immediateMessage",
+      immediateMessage
+    );
+    // dispatch(setNewMessage(immediateMessage));
 
     console.log("[thunkCreators] postMessage: body:", body);
-    console.log("[thunkCreators] postMessage: data:", data);
-    console.log("[thunkCreators] postMessage: data.message:", data.message);
+    // console.log("[thunkCreators] postMessage: data:", data);
+    // console.log("[thunkCreators] postMessage: data.message:", data.message);
 
     if (!body.conversationId) {
-      dispatch(addConversation(body.recipientId, data.message));
+      // dispatch(addConversation(body.recipientId, data.message));
+      dispatch(addConversation(body.recipientId, immediateMessage));
     } else {
       console.log(
         "[thunkCreators] postMessage: about to set new message.",
-        data.message
+        immediateMessage
       );
-      dispatch(setNewMessage(data.message));
+      dispatch(setNewMessage(immediateMessage));
     }
 
+    const data = await saveMessage(body);
     sendMessage(data, body);
   } catch (error) {
     console.error(error);

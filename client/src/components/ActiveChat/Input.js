@@ -29,11 +29,13 @@ const Input = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
+    // always send the user id so that the message can be immediately posted before it is sent to the endpoint.
     const reqBody = {
       text: event.target.text.value,
       recipientId: otherUser.id,
       conversationId,
-      sender: conversationId ? null : user
+      sender: conversationId ? null : user,
+      senderId: user.id
     };
     await postMessage(reqBody);
     setText("");
@@ -59,7 +61,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     postMessage: (message) => {
       dispatch(postMessage(message));
-    },
+    }
   };
 };
 
