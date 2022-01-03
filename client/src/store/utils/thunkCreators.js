@@ -70,7 +70,7 @@ export const logout = (id) => async (dispatch) => {
 // CONVERSATIONS THUNK CREATORS
 
 export const fetchConversations = () => async (dispatch) => {
-  console.error("[thunkCreators] fetchConversations");
+  console.log("[thunkCreators] fetchConversations");
   try {
     const { data } = await axios.get("/api/conversations");
     dispatch(gotConversations(data));
@@ -81,7 +81,7 @@ export const fetchConversations = () => async (dispatch) => {
 
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
-  console.error("[thunkCreators] saveMessage: successfully posted", data);
+  console.log("[thunkCreators] saveMessage: successfully posted", data);
   return data;
 };
 
@@ -103,9 +103,9 @@ export const postMessage = (body) => async (dispatch) => {
     // TODO saveMessage is async (performs a POST). Update state before here?
     const data = await saveMessage(body);
 
-    console.error("[thunkCreators] postMessage: body:", body);
-    console.error("[thunkCreators] postMessage: data:", data);
-    console.error("[thunkCreators] postMessage: data.message:", data.message);
+    console.log("[thunkCreators] postMessage: body:", body);
+    console.log("[thunkCreators] postMessage: data:", data);
+    console.log("[thunkCreators] postMessage: data.message:", data.message);
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
