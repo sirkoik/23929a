@@ -10,8 +10,8 @@ import { clearOnLogout } from "../store/index";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh"
-  }
+    height: "100vh",
+  },
 }));
 
 const Home = (props) => {
@@ -48,7 +48,8 @@ const Home = (props) => {
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
         <SidebarContainer />
-        <ActiveChat />
+        {/* TODO Added the conversations prop. This isn't fed to ActiveChat in the initial commit, so ActiveChat's state doesn't update when a new message is posted. */}
+        <ActiveChat conversations={props.conversations} />
       </Grid>
     </>
   );
@@ -57,7 +58,7 @@ const Home = (props) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    conversations: state.conversations
+    conversations: state.conversations,
   };
 };
 
@@ -69,7 +70,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchConversations: () => {
       dispatch(fetchConversations());
-    }
+    },
   };
 };
 

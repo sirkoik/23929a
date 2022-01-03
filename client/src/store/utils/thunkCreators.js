@@ -70,6 +70,7 @@ export const logout = (id) => async (dispatch) => {
 // CONVERSATIONS THUNK CREATORS
 
 export const fetchConversations = () => async (dispatch) => {
+  console.error("[thunkCreators] fetchConversations");
   try {
     const { data } = await axios.get("/api/conversations");
     dispatch(gotConversations(data));
@@ -80,6 +81,7 @@ export const fetchConversations = () => async (dispatch) => {
 
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
+  console.error("[thunkCreators] saveMessage: successfully posted", data);
   return data;
 };
 
@@ -93,13 +95,25 @@ const sendMessage = (data, body) => {
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-export const postMessage = (body) => (dispatch) => {
+
+// NOTE: The original version of postMessage attempted use data.message without
+// waiting for the promise to fulfill. sends undefined to addConversation
+export const postMessage = (body) => async (dispatch) => {
   try {
-    const data = saveMessage(body);
+    // TODO saveMessage is async (performs a POST). Update state before here?
+    const data = await saveMessage(body);
+
+    console.error("[thunkCreators] postMessage: body:", body);
+    console.error("[thunkCreators] postMessage: data:", data);
+    console.error("[thunkCreators] postMessage: data.message:", data.message);
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
+      console.error(
+        "[thunkCreators] postMessage: about to set new message.",
+        data.message
+      );
       dispatch(setNewMessage(data.message));
     }
 
