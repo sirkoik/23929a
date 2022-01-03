@@ -106,6 +106,7 @@ export const postMessage = (body) => async (dispatch) => {
     // This message goes away when saveMessage fulfills.
     const currentDate = new Date().toISOString();
     const immediateMessage = {
+      id: queueId,
       conversationId: body.conversationId,
       senderId: body.senderId,
       queueId: queueId,
