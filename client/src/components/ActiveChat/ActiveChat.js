@@ -25,8 +25,8 @@ const ActiveChat = (props) => {
   const { user } = props;
   const conversation = props.conversation || {};
 
-  console.error("[ActiveChat] conversation", conversation);
-  console.error("[ActiveChat] user", user);
+  console.log("[ActiveChat] conversation", conversation);
+  console.log("[ActiveChat] user", user);
 
   return (
     <Box className={classes.root}>

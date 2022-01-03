@@ -110,7 +110,7 @@ export const postMessage = (body) => async (dispatch) => {
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
-      console.error(
+      console.log(
         "[thunkCreators] postMessage: about to set new message.",
         data.message
       );

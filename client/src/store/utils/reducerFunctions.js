@@ -1,7 +1,7 @@
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
-  console.error("[reducerFunctions] addMessageToStore", payload);
+  console.log("[reducerFunctions] addMessageToStore", payload);
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
@@ -23,7 +23,7 @@ export const addMessageToStore = (state, payload) => {
   });
 
   // state successfully updates with new message.
-  console.error(
+  console.log(
     "[reducerFunctions] addMessageToStore: newStateExistingConvo",
     newStateExistingConvo,
     "latest message text: " + message.text

@@ -6,7 +6,7 @@ import moment from "moment";
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
 
-  console.error("[Messages]: messages", messages);
+  console.log("[Messages]: messages", messages);
 
   // sort the messages array by the time the messages were created.
   // uses localeCompare to keep the sorting internationalization friendly.
@@ -14,7 +14,7 @@ const Messages = (props) => {
     a.createdAt.localeCompare(b.createdAt)
   );
 
-  console.error("[Messages]: orderedMessages", orderedMessages);
+  console.log("[Messages]: orderedMessages", orderedMessages);
 
   return (
     <Box>

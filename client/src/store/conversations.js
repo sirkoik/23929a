@@ -74,7 +74,7 @@ const reducer = (state = [], action) => {
     case GET_CONVERSATIONS:
       return action.conversations;
     case SET_MESSAGE:
-      console.error(
+      console.log(
         "[conversations.js] about to add message to store",
         action.payload
       );
