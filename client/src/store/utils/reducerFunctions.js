@@ -1,12 +1,11 @@
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
-  console.log("[reducerFunctions] addMessageToStore", payload);
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
-      messages: [message],
+      messages: [message]
     };
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
@@ -21,13 +20,6 @@ export const addMessageToStore = (state, payload) => {
       return convo;
     }
   });
-
-  // state successfully updates with new message.
-  console.log(
-    "[reducerFunctions] addMessageToStore: newStateExistingConvo",
-    newStateExistingConvo,
-    "latest message text: " + message.text
-  );
 
   return newStateExistingConvo;
 };
@@ -87,4 +79,16 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       return convo;
     }
   });
+};
+
+// queuedMessages reducer functions
+
+export const addQueuedMessageToStore = (state, message) => {
+  const newState = [...state];
+  newState.push(message);
+  return newState;
+};
+
+export const removeQueuedMessageFromStore = (state, id) => {
+  return state.filter((message) => message.queueId !== id);
 };

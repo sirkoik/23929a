@@ -6,6 +6,7 @@ import {
   setNewMessage,
   setSearchedUsers
 } from "../conversations";
+import { removeQueuedMessage, setQueuedMessage } from "../queuedMessages";
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -70,7 +71,6 @@ export const logout = (id) => async (dispatch) => {
 // CONVERSATIONS THUNK CREATORS
 
 export const fetchConversations = () => async (dispatch) => {
-  console.log("[thunkCreators] fetchConversations");
   try {
     const { data } = await axios.get("/api/conversations");
     dispatch(gotConversations(data));
@@ -80,15 +80,7 @@ export const fetchConversations = () => async (dispatch) => {
 };
 
 const saveMessage = async (body) => {
-  console.log(
-    "[thunkCreators] saveMessage: attempting to send body to db endpoint",
-    body
-  );
   const { data } = await axios.post("/api/messages", body);
-  console.log(
-    "[thunkCreators] saveMessage: successfully posted to db endpoint",
-    data
-  );
   return data;
 };
 
@@ -105,47 +97,40 @@ const sendMessage = (data, body) => {
 
 // NOTE: The original version of postMessage attempted use data.message without
 // waiting for the promise to fulfill, and sent undefined to addConversation
+
 export const postMessage = (body) => async (dispatch) => {
+  let queueId = new Date().getTime() + Math.random();
+
   try {
-    // setup an immediate message to add to the state so it shows right away
-    // before the data has been submitted to the endpoint.
-    // problems:
-    // 1. This doesn't know what the unique ID is since the ID is returned from the endpoint.
-    // 2. This modifies the state before the data is posted and keeps it that way.
-    // TODO better approach: add this to a temporary state. concatenate the temporary state,
-    // then clear the temporary state once the data has been posted to the endpoint.
+    // Set up an immediate message that is sent to the queue.
+    // This message goes away when saveMessage fulfills.
     const currentDate = new Date().toISOString();
     const immediateMessage = {
       conversationId: body.conversationId,
       senderId: body.senderId,
-      // id: 0,
-      text: body.text,
+      queueId: queueId,
+      text: "(sending): " + body.text,
       createdAt: currentDate,
       updatedat: currentDate
     };
-    console.log(
-      "[thunkCreators]: postMessage: immediateMessage",
-      immediateMessage
-    );
-    // dispatch(setNewMessage(immediateMessage));
 
-    console.log("[thunkCreators] postMessage: body:", body);
-    // console.log("[thunkCreators] postMessage: data:", data);
-    // console.log("[thunkCreators] postMessage: data.message:", data.message);
-
-    if (!body.conversationId) {
-      // dispatch(addConversation(body.recipientId, data.message));
-      dispatch(addConversation(body.recipientId, immediateMessage));
-    } else {
-      console.log(
-        "[thunkCreators] postMessage: about to set new message.",
-        immediateMessage
-      );
-      dispatch(setNewMessage(immediateMessage));
-    }
+    // add the message to the queue before submitting a
+    // request to the endpoint
+    dispatch(setQueuedMessage(immediateMessage));
 
     const data = await saveMessage(body);
+
+    if (!body.conversationId) {
+      dispatch(addConversation(body.recipientId, data.message));
+    } else {
+      dispatch(setNewMessage(data.message));
+    }
+
     sendMessage(data, body);
+
+    // remove the message from the local queue after it has
+    // successfully been posted to the endpoint.
+    dispatch(removeQueuedMessage(queueId));
   } catch (error) {
     console.error(error);
   }

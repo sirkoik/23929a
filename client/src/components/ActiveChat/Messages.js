@@ -4,17 +4,21 @@ import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
 const Messages = (props) => {
-  const { messages, otherUser, userId } = props;
+  const { messages, otherUser, userId, queuedMessages, conversationId } = props;
 
-  console.log("[Messages]: messages", messages);
-
-  // sort the messages array by the time the messages were created.
-  // uses localeCompare to keep the sorting internationalization friendly.
-  const orderedMessages = [...messages].sort((a, b) =>
-    a.createdAt.localeCompare(b.createdAt)
+  // add queued messages for the specific user and conversation to the convo.
+  const queuedMessagesForConvo = queuedMessages.filter(
+    (message) => message.conversationId === conversationId
   );
 
-  console.log("[Messages]: orderedMessages", orderedMessages);
+  // combine all the complete and queued messages into one array.
+  const messagesCompleteAndQueued = [...messages, ...queuedMessagesForConvo];
+
+  // sort the complete and queued messages by the time the messages were created.
+  // uses localeCompare to keep the sorting internationalization friendly.
+  const orderedMessages = messagesCompleteAndQueued.sort((a, b) =>
+    a.createdAt.localeCompare(b.createdAt)
+  );
 
   return (
     <Box>

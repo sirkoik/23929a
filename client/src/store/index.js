@@ -7,12 +7,13 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import user from "./user";
 import conversations from "./conversations";
 import activeConversation from "./activeConversation";
+import queuedMessages from "./queuedMessages";
 
 const CLEAR_ON_LOGOUT = "CLEAR_ON_LOGOUT";
 
 export const clearOnLogout = () => {
   return {
-    type: CLEAR_ON_LOGOUT,
+    type: CLEAR_ON_LOGOUT
   };
 };
 
@@ -20,6 +21,7 @@ const appReducer = combineReducers({
   user,
   conversations,
   activeConversation,
+  queuedMessages
 });
 const rootReducer = (state, action) => {
   if (action.type === CLEAR_ON_LOGOUT) {
