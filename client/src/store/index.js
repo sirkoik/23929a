@@ -2,8 +2,6 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import loggerMiddleware from "redux-logger";
 import thunkMiddleware from "redux-thunk";
 
-import { composeWithDevTools } from "redux-devtools-extension";
-
 import user from "./user";
 import conversations from "./conversations";
 import activeConversation from "./activeConversation";
@@ -33,5 +31,5 @@ const rootReducer = (state, action) => {
 
 export default createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunkMiddleware, loggerMiddleware))
+  applyMiddleware(thunkMiddleware, loggerMiddleware)
 );
