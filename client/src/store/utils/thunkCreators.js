@@ -4,7 +4,7 @@ import {
   gotConversations,
   addConversation,
   setNewMessage,
-  setSearchedUsers
+  setSearchedUsers,
 } from "../conversations";
 import { removeQueuedMessage, setQueuedMessage } from "../queuedMessages";
 import { gotUser, setFetchingStatus } from "../user";
@@ -88,7 +88,7 @@ const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
     recipientId: body.recipientId,
-    sender: data.sender
+    sender: data.sender,
   });
 };
 
@@ -108,7 +108,7 @@ export const postMessage = (body) => async (dispatch) => {
       queueId: queueId,
       text: "(sending): " + body.text,
       createdAt: currentDate,
-      updatedat: currentDate
+      updatedat: currentDate,
     };
 
     // add the message to the queue before submitting a
