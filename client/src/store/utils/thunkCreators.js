@@ -6,7 +6,6 @@ import {
   setNewMessage,
   setSearchedUsers,
 } from "../conversations";
-import { removeQueuedMessage, setQueuedMessage } from "../queuedMessages";
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -95,26 +94,7 @@ const sendMessage = (data, body) => {
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
-  let queueId = new Date().getTime() + Math.random();
-
   try {
-    // Set up an immediate message that is sent to the queue.
-    // This message goes away when saveMessage fulfills.
-    const currentDate = new Date().toISOString();
-    const immediateMessage = {
-      id: queueId,
-      conversationId: body.conversationId,
-      senderId: body.senderId,
-      queueId: queueId,
-      text: "(sending): " + body.text,
-      createdAt: currentDate,
-      updatedat: currentDate,
-    };
-
-    // add the message to the queue before submitting a
-    // request to the endpoint
-    dispatch(setQueuedMessage(immediateMessage));
-
     const data = await saveMessage(body);
 
     if (!body.conversationId) {
@@ -124,10 +104,6 @@ export const postMessage = (body) => async (dispatch) => {
     }
 
     sendMessage(data, body);
-
-    // remove the message from the local queue after it has
-    // successfully been posted to the endpoint.
-    dispatch(removeQueuedMessage(queueId));
   } catch (error) {
     console.error(error);
   }

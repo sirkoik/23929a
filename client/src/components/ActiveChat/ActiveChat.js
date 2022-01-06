@@ -24,7 +24,6 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
-  const queuedMessages = props.queuedMessages;
 
   return (
     <Box className={classes.root}>
@@ -37,8 +36,6 @@ const ActiveChat = (props) => {
           <Box className={classes.chatContainer}>
             <Messages
               messages={conversation.messages}
-              queuedMessages={queuedMessages}
-              conversationId={conversation.id}
               otherUser={conversation.otherUser}
               userId={user.id}
             />
@@ -60,10 +57,8 @@ const mapStateToProps = (state) => {
     conversation:
       state.conversations &&
       state.conversations.find(
-        (conversation) =>
-          conversation.otherUser.username === state.activeConversation
-      ),
-    queuedMessages: state.queuedMessages
+        (conversation) => conversation.otherUser.username === state.activeConversation
+      )
   };
 };
 

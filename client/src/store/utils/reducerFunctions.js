@@ -13,9 +13,10 @@ export const addMessageToStore = (state, payload) => {
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
-      convo.messages.push(message);
-      convo.latestMessageText = message.text;
-      return convo;
+      const convoCopy = { ...convo };
+      convoCopy.messages = [ ...convoCopy.messages, message ];
+      convoCopy.latestMessageText = message.text;
+      return convoCopy;
     } else {
       return convo;
     }
@@ -69,24 +70,23 @@ export const addSearchedUsersToStore = (state, users) => {
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
-      convo.id = message.conversationId;
-      convo.messages.push(message);
-      convo.latestMessageText = message.text;
-      return convo;
+      const convoCopy = { ...convo };
+      convoCopy.id = message.conversationId;
+      convoCopy.messages = [...convo.messages, message];
+      convoCopy.latestMessageText = message.text;
+      return convoCopy;
     } else {
       return convo;
     }
   });
 };
 
-// queuedMessages reducer functions
-
-export const addQueuedMessageToStore = (state, message) => {
-  const newState = [...state];
-  newState.push(message);
-  return newState;
-};
-
-export const removeQueuedMessageFromStore = (state, id) => {
-  return state.filter((message) => message.queueId !== id);
-};
+// sort the conversations with localeCompare so that the sort order 
+// is correct for the user's locale.
+export const sortConversations = (state, conversations) => {
+  return [...conversations].map(conversation => {
+    const newConvo = {...conversation};
+    newConvo.messages.sort((a,b) => a.createdAt.localeCompare(b.createdAt));
+    return newConvo;
+  });
+}
