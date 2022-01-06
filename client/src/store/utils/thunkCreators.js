@@ -94,10 +94,6 @@ const sendMessage = (data, body) => {
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-
-// NOTE: The original version of postMessage attempted use data.message without
-// waiting for the promise to fulfill, and sent undefined to addConversation
-
 export const postMessage = (body) => async (dispatch) => {
   let queueId = new Date().getTime() + Math.random();
 

@@ -11,7 +11,7 @@ export const addMessageToStore = (state, payload) => {
     return [newConvo, ...state];
   }
 
-  const newStateExistingConvo = state.map((convo) => {
+  return state.map((convo) => {
     if (convo.id === message.conversationId) {
       convo.messages.push(message);
       convo.latestMessageText = message.text;
@@ -20,8 +20,6 @@ export const addMessageToStore = (state, payload) => {
       return convo;
     }
   });
-
-  return newStateExistingConvo;
 };
 
 export const addOnlineUserToStore = (state, id) => {
