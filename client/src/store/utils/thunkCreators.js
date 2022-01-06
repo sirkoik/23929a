@@ -95,14 +95,16 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
-    const data = await saveMessage(body);
+    // set a unique ID before the server returns an ID.
+    body.id = parseInt(new Date().getTime() / 1000);
 
     if (!body.conversationId) {
-      dispatch(addConversation(body.recipientId, data.message));
+      dispatch(addConversation(body.recipientId, body));
     } else {
-      dispatch(setNewMessage(data.message));
+      dispatch(setNewMessage(body));
     }
-
+    
+    const data = await saveMessage(body);
     sendMessage(data, body);
   } catch (error) {
     console.error(error);
