@@ -96,7 +96,6 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 export const sortConversations = (state, conversations) => {
   return [...conversations].map(conversation => {
     const newConvo = {...conversation};
-    newConvo.unreadCount = 0; // TODO update unreadCount automatically
     newConvo.messages.sort((a,b) => a.createdAt.localeCompare(b.createdAt));
     return newConvo;
   });
