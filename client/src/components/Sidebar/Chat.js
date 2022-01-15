@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
@@ -16,6 +16,17 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     }
+  },
+  bubble: {
+    backgroundColor: "#3A8DFF",
+    borderRadius: "20px 20px 20px 20px",
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    letterSpacing: -0.2,
+    padding: 8,
   }
 }));
 
@@ -37,6 +48,13 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      {!!conversation.unreadCount && (
+        <Box className={classes.bubble}>
+          <Typography className={classes.text}>
+            {conversation.unreadCount}
+          </Typography>
+        </Box>
+      )}      
     </Box>
   );
 };
