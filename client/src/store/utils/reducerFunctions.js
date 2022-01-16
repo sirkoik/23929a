@@ -96,7 +96,21 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 export const sortConversations = (state, conversations) => {
   return [...conversations].map(conversation => {
     const newConvo = {...conversation};
+    newConvo.unreadCount = conversation.messages.length;
     newConvo.messages.sort((a,b) => a.createdAt.localeCompare(b.createdAt));
+    return newConvo;
+  });
+}
+
+// clear unread messages from the active conversation.
+export const clearUnreadMessages = (state, userId) => {
+  //const convoId = state.find(convo => convo.otherUser.id === userId).id;
+
+  return [...state].map(conversation => {
+    const newConvo = {...conversation};
+    if (conversation.otherUser.id === userId) {
+      newConvo.unreadCount = 0;
+    }
     return newConvo;
   });
 }

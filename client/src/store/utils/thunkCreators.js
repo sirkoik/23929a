@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  clearUnreadActive
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -117,3 +118,10 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+// ACTIVE CONVERSATIONS THUNK CREATORS
+
+// clear the unread count from a conversation when switching to it.
+export const switchActiveConv = (userId) => async (dispatch) => {
+  dispatch(clearUnreadActive(userId));
+}
