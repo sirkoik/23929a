@@ -121,7 +121,9 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 // ACTIVE CONVERSATIONS THUNK CREATORS
 
-// clear the unread count from a conversation when switching to it.
-export const switchActiveConv = (userId) => async (dispatch) => {
+// clear the unread message count from a conversation
+// called when switching to the conversation, submitting a message in
+// the conversation or selecting the input box.
+export const clearActiveUnreadMessages = (userId) => async (dispatch) => {
   dispatch(clearUnreadActive(userId));
 }

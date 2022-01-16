@@ -13,8 +13,10 @@ export const addMessageToStore = (state, payload) => {
     return [newConvo, ...state];
   }
 
-  const convo = state.find(convo => convo.id === message.conversationId);
-  const otherUserId = convo?.otherUser?.id ?? -1;
+  // find other user id. if the message is showing up in the sender's window,
+  // don't increment the unread counter for the current conversation.
+  const currentConvo = state.find(convo => convo.id === message.conversationId);
+  const otherUserId = currentConvo?.otherUser?.id ?? -1;
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
@@ -93,6 +95,10 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 
 // sort the conversations with localeCompare so that the sort order 
 // is correct for the user's locale.
+//
+// loads with all messages in each conversation initially unread.
+// When conversations are selected or new messages are added, the 
+// unread count will change.
 export const sortConversations = (state, conversations) => {
   return [...conversations].map(conversation => {
     const newConvo = {...conversation};
