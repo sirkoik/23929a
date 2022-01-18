@@ -43,7 +43,6 @@ const Input = (props) => {
       senderId: user.id
     };
     await postMessage(reqBody);
-    await props.clearActiveUnread(otherUser.id);
     setText("");
   };
 
