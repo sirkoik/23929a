@@ -101,8 +101,10 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 // unread count will change.
 export const sortConversations = (state, conversations) => {
   return [...conversations].map(conversation => {
+    const otherUserId = conversation.otherUser.id;
+
     const newConvo = {...conversation};
-    newConvo.unreadCount = conversation.messages.length;
+    newConvo.unreadCount = conversation.messages.reduce((unread, current) => current.senderId === otherUserId && !current.recipientHasRead? unread + 1 : unread, 0);
     newConvo.messages.sort((a,b) => a.createdAt.localeCompare(b.createdAt));
     return newConvo;
   });
