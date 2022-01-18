@@ -124,6 +124,20 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 // clear the unread message count from a conversation
 // called when switching to the conversation, submitting a message in
 // the conversation or selecting the input box.
-export const clearActiveUnreadMessages = (userId) => async (dispatch) => {
-  dispatch(clearUnreadActive(userId));
+export const clearActiveUnreadMessages = (recipientId) => async (dispatch, getState) => {
+  const activeConv = getState().activeConversation;
+  const conversations = getState().conversations;
+
+  const conversationId = conversations.find(conv => conv.otherUser.username === activeConv).id;
+
+  dispatch(clearUnreadForUserInConvo(recipientId, conversationId));
+  dispatch(clearUnreadActive(recipientId));
+}
+
+// clear the unread messages for the user in the active convo
+// on the database back end.
+export const clearUnreadForUserInConvo = (recipientId, conversationId) => async (dispatch) => {
+  const body = { recipientId: recipientId, conversationId: conversationId };
+  const { data } = await axios.post("/api/clearUnread", body);
+  return data;
 }

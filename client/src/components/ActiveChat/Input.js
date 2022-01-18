@@ -26,7 +26,8 @@ const Input = (props) => {
     setText(event.target.value);
     await props.clearActiveUnread(otherUser.id);
   };
-  
+
+  // clear the unread state for the active conversation when the user clicks the input field.
   const handleClick = async (event) => {
     await props.clearActiveUnread(otherUser.id);
   }

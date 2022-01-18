@@ -110,10 +110,8 @@ export const sortConversations = (state, conversations) => {
   });
 }
 
-// clear unread messages from the active conversation.
+// clear unread messages from the active conversation (client side).
 export const clearUnreadMessages = (state, userId) => {
-  //const convoId = state.find(convo => convo.otherUser.id === userId).id;
-
   return [...state].map(conversation => {
     const newConvo = {...conversation};
     if (conversation.otherUser.id === userId) {
