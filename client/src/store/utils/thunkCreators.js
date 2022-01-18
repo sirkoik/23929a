@@ -138,6 +138,14 @@ export const clearActiveUnreadMessages = (recipientId) => async (dispatch, getSt
 // on the database back end.
 export const clearUnreadForUserInConvo = (recipientId, conversationId) => async (dispatch) => {
   const body = { recipientId: recipientId, conversationId: conversationId };
+
+  // if the conversation is new with no messages in it,
+  // there aren't any unread messages to clear yet.
+  // immediately resolve the Promise.
+  if (!conversationId) {
+    return Promise.resolve();
+  }
+
   const { data } = await axios.post("/api/clearUnread", body);
   return data;
 }
