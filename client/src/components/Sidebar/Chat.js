@@ -20,7 +20,13 @@ const useStyles = makeStyles((theme) => ({
   },
   bubble: {
     backgroundColor: "#3A8DFF",
-    borderRadius: "20px 20px 20px 20px",
+    borderRadius: "25px",
+    height: "27px",
+    paddingLeft: "10px",
+    paddingRight: "10px",
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    lineHeight: "27px"
   },
   text: {
     fontSize: 14,
@@ -52,9 +58,7 @@ const Chat = (props) => {
       <ChatContent conversation={conversation} />
       {!!conversation.unreadCount && (
         <Box className={classes.bubble}>
-          <Typography className={classes.text}>
             {conversation.unreadCount}
-          </Typography>
         </Box>
       )}      
     </Box>
