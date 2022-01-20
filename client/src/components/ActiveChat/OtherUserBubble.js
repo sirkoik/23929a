@@ -4,13 +4,23 @@ import { Box, Typography, Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
   root: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  bubbleRoot: {
     display: "flex"
   },
   avatar: {
-    height: 30,
-    width: 30,
     marginRight: 11,
     marginTop: 6
+  },
+  avatarMain: {
+    height: 30,
+    width: 30
+  },
+  avatarSmaller: {
+    height: 20,
+    width: 20
   },
   usernameDate: {
     fontSize: 11,
@@ -33,18 +43,21 @@ const useStyles = makeStyles(() => ({
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
+  const { text, time, otherUser, isLastRead } = props;
   return (
     <Box className={classes.root}>
-      <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
-      <Box>
-        <Typography className={classes.usernameDate}>
-          {otherUser.username} {time}
-        </Typography>
-        <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
+      <Box className={classes.bubbleRoot}>
+        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={[classes.avatar, classes.avatarMain]}></Avatar>
+        <Box>
+          <Typography className={classes.usernameDate}>
+            {otherUser.username} {time}
+          </Typography>
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
         </Box>
       </Box>
+      {isLastRead && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={[classes.avatar, classes.avatarSmaller]}></Avatar>}
     </Box>
   );
 };
