@@ -146,6 +146,6 @@ export const clearUnreadForUserInConvo = (recipientId, conversationId) => async 
     return Promise.resolve();
   }
 
-  const { data } = await axios.post("/api/clearUnread", body);
+  const { data } = await axios.patch("/api/clearUnread", body);
   return data;
 }
