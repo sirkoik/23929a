@@ -147,5 +147,11 @@ export const clearUnreadForUserInConvo = (recipientId, conversationId) => async 
   }
 
   const { data } = await axios.patch("/api/clearUnread", body);
+  
+  socket.emit("update-unread", {
+    message: data.message,
+    recipientId: body.recipientId,
+    sender: data.sender,
+  });
   return data;
 }

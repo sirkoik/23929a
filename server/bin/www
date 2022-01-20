@@ -47,6 +47,13 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("update-unread", (data) => {
+    socket.broadcast.emit("update-unread", {
+      message: data.message,
+      sender: data.sender
+    });
+  });
+
   socket.on("logout", (id) => {
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
