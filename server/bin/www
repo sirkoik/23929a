@@ -47,6 +47,8 @@ io.on("connection", (socket) => {
     });
   });
 
+  // to update the position of the "read" avatar, the user needs to know what 
+  // the other users have or haven't read.
   socket.on("update-unread", (data) => {
     socket.broadcast.emit("update-unread", {
       message: data.message,

@@ -8,7 +8,8 @@ const Messages = (props) => {
 
   // looks for the last read id in a conversation.
   // the conversation must be sorted ascending by locale date.
-  const lastReadId = messages.reduce((acc, message) => ((message.recipientHasRead && message.senderId === userId) || message.senderId === otherUser.id)? message.id : acc, -1);
+//  const lastReadId = messages.reduce((acc, message) => ((message.recipientHasRead && message.senderId === userId) || message.senderId === otherUser.id)? message.id : acc, -1);
+  const lastReadId = otherUser.lastReadId;
 
   return (
     <Box>

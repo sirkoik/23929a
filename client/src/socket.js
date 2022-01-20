@@ -4,7 +4,7 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
-  clearUnreadActive
+  updateAllUnread
 } from "./store/conversations";
 
 const socket = io(window.location.origin);
@@ -25,8 +25,7 @@ socket.on("connect", () => {
   });
 
   socket.on("update-unread", (data) => {
-    console.log('Got a socket event telling me to update unread messages on this side.');
-    store.dispatch(clearUnreadActive(data.recipientId));
+    store.dispatch(updateAllUnread(data.recipientId));
   })
 });
 
