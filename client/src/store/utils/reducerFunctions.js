@@ -106,40 +106,17 @@ export const sortConversations = (state, conversations) => {
     const newConvo = {...conversation};
     newConvo.unreadCount = conversation.messages.reduce((unread, current) => current.senderId === otherUserId && !current.recipientHasRead? unread + 1 : unread, 0);
     newConvo.messages.sort((a,b) => a.createdAt.localeCompare(b.createdAt));
-
-    const lastReadId = newConvo.messages.reduce((acc, message) => ((message.recipientHasRead && message.senderId !== otherUserId) || message.senderId === otherUserId)? message.id : acc, -1);
-    newConvo.otherUser.lastReadId = lastReadId;
     return newConvo;
   });
 }
 
 // clear unread messages from the active conversation (client side).
-export const clearUnreadMessages = (state, userId, recipientId) => {
-
+export const clearUnreadMessages = (state, userId) => {
   return [...state].map(conversation => {
     const newConvo = {...conversation};
     if (conversation.otherUser.id === userId) {
       newConvo.unreadCount = 0;
     }
-    return newConvo;
-  });
-}
-
-// update the unread message position for all conversations that the
-// current user is involved in.
-//
-// this function assumes that recipientHasRead is up to date in the
-// database.
-export const updateUnreadMessages = (state, userId) => {
-  return [...state].map(conversation => {
-    const newConvo = {...conversation};
-
-    // find the last read message (assumes the convo is sorted).
-    const lastReadId = newConvo.messages.reduce((acc, message) => ((message.recipientHasRead && message.senderId !== newConvo.otherUser.id) || message.senderId === newConvo.otherUser.id)? message.id : acc, -1);
-
-    newConvo.otherUser.lastReadId = lastReadId;
-    console.log(newConvo);
-
     return newConvo;
   });
 }

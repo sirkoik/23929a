@@ -127,12 +127,11 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 export const clearActiveUnreadMessages = (recipientId) => async (dispatch, getState) => {
   const activeConv = getState().activeConversation;
   const conversations = getState().conversations;
-  const userId = getState().user.id;
 
   const conversationId = conversations.find(conv => conv.otherUser.username === activeConv).id;
 
   dispatch(clearUnreadForUserInConvo(recipientId, conversationId));
-  dispatch(clearUnreadActive(userId, recipientId));
+  dispatch(clearUnreadActive(recipientId));
 }
 
 // clear the unread messages for the user in the active convo
