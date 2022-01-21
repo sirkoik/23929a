@@ -27,7 +27,19 @@ Message.clearUnreadForSender = async function (senderId, conversationId) {
       recipientHasRead: false
     }
   });
-  return messages;
+
+  // this user has read all the messages in the convo. return all the messages in the
+  // convo to find the last ID.
+  const messagesCount = await Message.findAll({
+    where: {
+      conversationId: conversationId
+    },
+    order: [
+      ['createdAt', 'ASC']
+    ]
+  });
+
+  return messagesCount;
 }
 
 module.exports = Message;

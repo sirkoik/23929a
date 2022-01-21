@@ -10,8 +10,11 @@ router.patch("/", async (req, res, next) => {
 
     const { recipientId, conversationId } = req.body;
 
-    let messages = await Message.clearUnreadForSender(recipientId, conversationId);
-    res.sendStatus(204);
+    const messages = await Message.clearUnreadForSender(recipientId, conversationId);
+    const lastReadMessage = messages[messages.length - 1].dataValues.id;
+
+    // res.sendStatus(204);
+    res.send({lastReadMessage: lastReadMessage});
   } catch (error) {
     next(error);
   }
