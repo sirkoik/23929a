@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  clearUnreadActive
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -117,3 +118,40 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+// ACTIVE CONVERSATIONS THUNK CREATORS
+
+// clear the unread message count from a conversation
+// called when switching to the conversation, submitting a message in
+// the conversation or selecting the input box.
+export const clearActiveUnreadMessages = (recipientId) => async (dispatch, getState) => {
+  const activeConv = getState().activeConversation;
+  const conversations = getState().conversations;
+
+  const conversationId = conversations.find(conv => conv.otherUser.username === activeConv).id;
+
+  dispatch(clearUnreadForUserInConvo(recipientId, conversationId));
+  dispatch(clearUnreadActive(recipientId));
+}
+
+// clear the unread messages for the user in the active convo
+// on the database back end.
+export const clearUnreadForUserInConvo = (recipientId, conversationId) => async (dispatch) => {
+  const body = { recipientId: recipientId, conversationId: conversationId };
+
+  // if the conversation is new with no messages in it,
+  // there aren't any unread messages to clear yet.
+  // immediately resolve the Promise.
+  if (!conversationId) {
+    return Promise.resolve();
+  }
+
+  const { data } = await axios.patch("/api/clearUnread", body);
+
+  // tell clients to update the unread counts on their side.
+  socket.emit("clear-other-unreads", {
+    conversationId: conversationId,
+    otherUserId: recipientId
+  });
+  return data;
+}
