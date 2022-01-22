@@ -147,5 +147,11 @@ export const clearUnreadForUserInConvo = (recipientId, conversationId) => async 
   }
 
   const { data } = await axios.patch("/api/clearUnread", body);
+
+  // tell clients to update the unread counts on their side.
+  socket.emit("clear-other-unreads", {
+    conversationId: conversationId,
+    otherUserId: recipientId
+  });
   return data;
 }

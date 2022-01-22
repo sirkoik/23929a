@@ -120,3 +120,22 @@ export const clearUnreadMessages = (state, userId) => {
     return newConvo;
   });
 }
+
+// clear the other user's unread messages on my side.
+// when they have read the messages and send a socket event, 
+// clear it on my side, so I'm up to date.
+export const clearOtherUserUnreadOnMySide = (state, conversationId, otherUserId) => {
+  return [...state].map(conversation => {
+    const newConvo = {...conversation};
+    if (conversation.id === conversationId) {
+      const newMessages = [...newConvo.messages].map(message => {
+        if (message.senderId !== otherUserId) {
+          message.recipientHasRead = true;
+        }
+        return message;
+      });
+      newConvo.messages = newMessages;
+    }
+    return newConvo;
+  });
+}
