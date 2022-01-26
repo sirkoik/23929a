@@ -4,9 +4,11 @@ const Message = require("./message");
 
 // associations
 
-User.hasMany(Conversation);
-Conversation.belongsTo(User, { as: "user1" });
-Conversation.belongsTo(User, { as: "user2" });
+// many-to-many association: a User can be part of many Conversations.
+// Conversations can have many Users.
+// This removes the two-user-per-conversation limit.
+User.belongsToMany(Conversation, {through: 'userConversations', as: 'conversation'});
+Conversation.belongsToMany(User, {through: 'userConversations', as: 'user'});
 Message.belongsTo(Conversation);
 Conversation.hasMany(Message);
 
